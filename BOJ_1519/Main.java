@@ -1,31 +1,36 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.ArrayList;
 
 public class Main {
 
     static int N;
 
-    static HashSet<Integer> findSubset(int num) {
-        HashSet<Integer> subset = new HashSet<>();
-        if (num < 10) return subset;
-
+    static ArrayList<Integer> findSubset(int num) {
+        ArrayList<Integer> subset = new ArrayList<>();
         String numStr = Integer.toString(num);
         int numLen = numStr.length();
 
         for (int i = 0; i < numLen; i++) {
-            if (numStr.charAt(i) == '0') continue;
+            for (int j = i; j < numLen; j++) {
+                int temp = num;
+                for (int k = 0; k < i; k++) {
+                    temp /= 10;
+                }
 
-            String subString = "";
-            int endIdx = i;
-            while (endIdx < numLen) {
-                subString = numStr.substring(i, endIdx + 1);
-                endIdx++;
-                subset.add(Integer.parseInt(subString));
+                int n = 0;
+                int pow = 1;
+                for (int k = i; k <= j; k++) {
+                    n += (temp % 10) * pow;
+                    temp /= 10;
+                    pow *= 10;
+                }
+                if (n == 0 || n == num) {
+                    continue;
+                }
+                subset.add(n);
             }
         }
-        subset.remove(num);
         return subset;
     }
 
@@ -40,7 +45,7 @@ public class Main {
             return minStart[num] = -1;
         }
 
-        HashSet<Integer> subset = findSubset(num);
+        ArrayList<Integer> subset = findSubset(num);
         String strN = num + "";
         int thisValue = 1000001;
         boolean victory = false;
